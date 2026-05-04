@@ -1,0 +1,88 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  python-package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Build sdist and wheel
+        run: |
+          python -m pip install --upgrade pip build
+          python -m build
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+      - name: Upload Python artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-dist
+          path: dist/*
+
+  vscode-extension:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install dependencies
+        working-directory: vscode-extension
+        run: npm ci
+      - name: Install vsce
+        run: npm install -g @vscode/vsce
+      - name: Package VSIX
+        working-directory: vscode-extension
+        run: vsce package --out "tokensqueeze-${GITHUB_REF_NAME}.vsix"
+      - name: Upload VSIX artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: vscode-vsix
+          path: vscode-extension/tokensqueeze-${{ github.ref_name }}.vsix
+
+  browser-extension:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Package browser extension
+        run: |
+          mkdir -p dist
+          cd browser-extension
+          zip -r "../dist/tokensqueeze-chrome-${GITHUB_REF_NAME}.zip" manifest.json src $( [ -d icons ] && echo icons )
+      - name: Upload browser ZIP artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-zip
+          path: dist/tokensqueeze-chrome-${{ github.ref_name }}.zip
+
+  release:
+    needs: [python-package, vscode-extension, browser-extension]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download VSIX artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: vscode-vsix
+          path: artifacts
+      - name: Download browser ZIP artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: browser-zip
+          path: artifacts
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            artifacts/tokensqueeze-${{ github.ref_name }}.vsix
+            artifacts/tokensqueeze-chrome-${{ github.ref_name }}.zip
+          generate_release_notes: true
