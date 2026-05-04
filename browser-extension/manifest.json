@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "TokenSqueeze",
+  "version": "0.1.0",
+  "description": "Compress your LLM prompts before sending. Adds a Squeeze button to ChatGPT, Claude, Perplexity, Gemini.",
+  "permissions": ["activeTab", "storage"],
+  "host_permissions": [
+    "http://127.0.0.1:8765/*",
+    "http://localhost:8765/*"
+  ],
+  "action": {
+    "default_title": "TokenSqueeze",
+    "default_popup": "src/popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chat.openai.com/*",
+        "https://chatgpt.com/*",
+        "https://claude.ai/*",
+        "https://www.perplexity.ai/*",
+        "https://perplexity.ai/*",
+        "https://gemini.google.com/*",
+        "https://bard.google.com/*"
+      ],
+      "js": ["src/content.js"],
+      "css": ["src/content.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "128": "src/icon.png"
+  }
+}

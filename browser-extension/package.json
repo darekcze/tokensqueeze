@@ -1,0 +1,11 @@
+{
+  "name": "tokensqueeze-browser",
+  "version": "0.1.0",
+  "description": "TokenSqueeze browser extension — adds a 'Squeeze' button next to LLM chat inputs.",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "echo 'Static MV3 extension — no build step. Load /browser-extension as unpacked.'",
+    "package": "cd .. && zip -r browser-extension/tokensqueeze-browser.zip browser-extension -x 'browser-extension/node_modules/*' -x 'browser-extension/*.zip'"
+  }
+}

@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# VS Code extension
+vscode-extension/node_modules/
+vscode-extension/out/
+vscode-extension/*.vsix
+
+# Browser extension
+browser-extension/node_modules/
+browser-extension/*.zip
+
+# Models
+tokensqueeze/classifier.pkl
+
+# Editor / OS
+.DS_Store
+.idea/
+*.swp
+
+# Local config
+.env
+*.local

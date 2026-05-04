@@ -1,0 +1,22 @@
+# Sample TokenSqueeze configuration for OpenClaw-style harnesses.
+# Most options here are read via env vars by the shell preprocessor; some
+# harnesses can read this directly. Both are documented for reference.
+
+[tokensqueeze]
+# Strategy selection: "auto" picks per-prompt based on a heuristic classifier.
+strategy = "auto"
+
+# Tokenizer encoding used for stats (does not affect compression itself).
+encoding = "cl100k_base"
+
+# Set to true to bypass compression entirely (same as TOKENSQUEEZE_DISABLE=1).
+disable = false
+
+[tokensqueeze.fallback]
+# When LLMLingua-2 is not installed, the bridge falls back to SNS rules.
+# Set this to "error" to fail loudly instead.
+on_missing_dependency = "warn"
+
+[tokensqueeze.logging]
+# Where to log savings stats. Stderr by default.
+target = "stderr"
